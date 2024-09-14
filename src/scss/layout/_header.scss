@@ -1,0 +1,56 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+
+.header{
+    background-color: v.$verde;
+
+    .contenido-header {
+        padding: 2rem;
+        
+        @include m.telefono {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;        
+        }
+        
+    }
+
+    h1{
+        color: v.$blanco;
+        text-align: center;
+
+        @include m.tablet{
+            text-align: left;
+            margin: 0;
+        }
+    }
+}
+
+.navegacion-principal {
+    //* display para acceder a la propiedad gap
+    display: flex; 
+
+    //* gap - separacion entre los elementos
+    gap: 2rem;  
+
+    //* Alineacion de menu, arriba hacia abajo en mq telefono
+    flex-direction: column;
+    align-items: center;
+    
+    //* Alineacion de menu, Izquierda a derecha
+    @include m.tablet {
+        flex-direction: row;
+    }
+
+    a {
+        color: v.$blanco;
+        font-size: 2.4rem;
+
+        //* & elimina el espacio en blanco entre el elemento a y el pseudo selector hover que deja al compilar
+        //! Sin & -> a :hover
+        //* Con & -> a:hover 
+        &:hover {
+            color: v.$amarillo;
+        }
+    }
+}

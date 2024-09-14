@@ -1,5 +1,13 @@
+import { 
+    departamentos as deptos
+} from "./apiControllers.js";
+
 const index = (req, res) => {
-    res.render('index');
+    const departamentos = deptos;
+    
+    res.render('index',{
+        departamentos
+    });
 };
 
 

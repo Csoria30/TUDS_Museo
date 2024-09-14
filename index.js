@@ -1,7 +1,8 @@
 //! Importaciones
 import express from 'express';
 import dotenv from 'dotenv';
-import museoRoutes from './routes/museoRoutes.js';
+import museoRoutes from './routes/routes.js';
+
 
 //! variables
 //* Realizamos una instancia de express
@@ -13,12 +14,13 @@ dotenv.config();
 //* Habilitar Pug
 app.set('view engine', 'pug');
 
+
+
 //- Definir la carpeta publica   
 app.use(express.static('public'));
 
-//* Rutas Museo
-app.use('/',museoRoutes );
-
+//* Rutas 
+app.use('/', museoRoutes ); 
 
 
 const PORT = process.env.PORT || 4000;
