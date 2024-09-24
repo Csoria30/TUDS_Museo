@@ -3,20 +3,23 @@ html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        
         title Museo
-
         link(rel="stylesheet" href="/css/normalize.css")
         link(rel="stylesheet" href="/css/app.css")
-
+        link(rel="stylesheet" href="/css/app2.css")
     body
         header.header
             .contenedor.contenido-header
-                h1 Museo Indigenas
+                h1 
+                    a(href="/") Museo Indigenas 
                 nav.navegacion-principal
                     a(href="#") Obras
                     a(href="#") nosotros
 
         block contenido
+        block grid
+        block paginacion
 
         include footer
 

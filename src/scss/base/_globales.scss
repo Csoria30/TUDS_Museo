@@ -17,14 +17,15 @@ body {
     font-optical-sizing: auto;
     font-style: normal;
     color: v.$negro;
-    font-size: 2rem;
+    font-size: rem;
+    background-color: v.$blanco;
 }
 p {
     color: v.$negro;
     line-height: 1.5;
 }
 .contenedor {
-    width: 95%;
+    width: 90%;
     max-width: 120rem;
     margin: 0 auto;
 }

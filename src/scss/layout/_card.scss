@@ -1,0 +1,23 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+
+//* Grid
+.grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+
+    @include m.desktop {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.card{
+    text-align: center;
+    border: 1px solid v.$negro;
+    background: v.$azulOscuro1;
+}
+
+.info-card{
+    padding: 1rem 2rem;
+}

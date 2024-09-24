@@ -7,20 +7,27 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "sass": "gulp dev"
+    "sass": "gulp dev",
+    "css": "postcss public/css/tailwind.css -o public/css/app2.css --watch"
   },
   "author": "Soria Cristian",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.20.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-validator": "^7.2.0",
     "node-google-translate-skidz": "^1.1.2",
     "pug": "^3.0.3"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
     "gulp": "^5.0.0",
     "gulp-sass": "^5.1.0",
     "nodemon": "^3.1.4",
-    "sass": "^1.77.8"
+    "postcss": "^8.4.47",
+    "postcss-cli": "^11.0.0",
+    "sass": "^1.77.8",
+    "tailwindcss": "^3.4.12"
   }
 }
