@@ -1,12 +1,13 @@
 import { check, validationResult } from 'express-validator';
-import { traducir, arraySeleccion, reconstruyendoObras, traduccionObjetos } from "./funciones.js";
+import { traducir,  reconstruyendoObras, traduccionObjetos, paginasObras, validacionDeIds } from "./funciones.js";
 import { URL_API, URL_API_SEARCH_IMAGE } from "./variables.js";
 
 
 let arregloIds = [];
 const objetosEs = [];
+let infoPaginacion;
+let totalResultados = arregloIds.length;
 let pagina;
-let limite;
 
 export const departamentos = async  (req, res) => {
     try {
@@ -25,16 +26,21 @@ export const departamentos = async  (req, res) => {
             return { departmentId , ...traducciones}
         });
 
-        return Promise.all(traduccionesPromesas);
+        return Promise.all(traduccionesPromesas) ; 
 
     } catch (error) {
         console.log(`Error API Departamentos: ${error}`);
     }
 };
 
+export const buscando = async (req, res) => {   
+    const dataDepartamentos = await departamentos(); 
 
-export const buscando = async (req, res) => {    
-    const dataDepartamentos = await departamentos();
+    //- Consulta a API
+    let terminoNombre = req.body.nombre;
+    let terminoDepto = req.body.departamento;
+    
+    
     //* Validacion del formulario
     await check('nombre').notEmpty().withMessage('Debe ingresar un nombre para realizar la busqueda').run(req)
 
@@ -49,34 +55,36 @@ export const buscando = async (req, res) => {
         } )
     }
 
-    //- Consulta a API
-    let terminoNombre = req.body.nombre;
-    let terminoDepto = req.body.departamento;
-    pagina = parseInt(req.query.pagina);
-    limite = parseInt(req.query.limite);
     
     //* Obteniendo resultado de la API
     const respuestaId = await fetch(`${URL_API_SEARCH_IMAGE}&q="${terminoNombre}`);
-    const arrayIdBusqueda = await respuestaId.json(); //Obteniendo los ids
+    const arrayIdBusqueda = await respuestaId.json(); // - Obteniendo los ids
+    
+    //- Validacion de ids
+    const { objectIDs } = arrayIdBusqueda;
+    arregloIds = await validacionDeIds(objectIDs);
+    
+    //! Paginacion
+    infoPaginacion = paginasObras(arregloIds, parseInt(req.query.pagina) );
+    const { resultado, next , previous } = infoPaginacion;
+    let paginaSiguiente = next.pagina || null;
+    /* let paginaAnterior = previous.pagina || null; */
 
-    //* Resultado de ids busqueda
-    arregloIds = arraySeleccion(arrayIdBusqueda, limite);
-
-    //* reconstruyendo objetos
-    const objetos = await reconstruyendoObras(arregloIds);
 
     //* Traduccion de los objetos
-    const objetosEs = await traduccionObjetos(objetos);
+    const objetosEs = await traduccionObjetos(resultado);  
     
     res.render('index',{
         busquedaBoolean: true,
         dataDepartamentos,
-        objetosEs
+        objetosEs,
+        pagina,
+        totalResultados,
+        paginaSiguiente
     })
  
     
 }
-
 
 export const index = async (req, res) => {    
     try {
@@ -87,48 +95,28 @@ export const index = async (req, res) => {
         })       
 
     } catch (error) {
-        console.log(`Error index Controllers: ${error.message}`)
+        console.log(`Error index Controllers: ${error.message}`);
+        res.status(500).send('Error al cargar resultados');
     }
-    
 }
 
 export const paginacion = async (req, res) => {
     try {
         const dataDepartamentos = await departamentos();
-        let idObras = arregloIds;
-
-        const { siguiente, anterior } = req.body;
-    
-        const startIndex = (pagina - 1) * limite;
-        const endIndex = pagina * limite;
-        const resultado = {};
-
-
-        if ( endIndex < idObras.length){
-            resultado.next = {
-                pagina: pagina + 1,
-                limite: limite
-            }
-        }
+        pagina = parseInt(req.params.pagina);
         
-        if ( startIndex > 0 ){
-            resultado.previous = {
-                pagina: pagina - 1,
-                limite: limite
-            }
-        }
+        //! Paginacion
+        infoPaginacion = paginasObras(arregloIds, pagina, limite);
 
-        resultado.resultado = idObras;
-
-        console.log(resultado)
-
+        console.log('-------------------')
+        console.log(infoPaginacion)
         
+        //* reconstruyendo objetos
+        const objetos = await reconstruyendoObras(infoPaginacion.resultado);
 
-        if(siguiente){
-            console.log('Presionaste siguiente')
-        }else{
-            console.log('Presionaste anterior')
-        }
+        //* Traduccion de los objetos
+        const objetosEs = await traduccionObjetos(objetos);
+        
 
         res.render('index',{
             dataDepartamentos,

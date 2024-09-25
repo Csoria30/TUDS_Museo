@@ -5,12 +5,14 @@ import { index, departamentos, buscando, paginacion, paginacion2  } from '../con
 
 //* Rutas FrontEnd
 router.get('/', index);
+router.get('/?pagina', paginacion);
 
-router.post('/paginacion', paginacion);
+
 router.post('/', buscando);
 
 //* Rutas Back
 router.get('/api/departamentos' ,departamentos);
+
 
 router.get('/paginacion2', paginacion2);
 

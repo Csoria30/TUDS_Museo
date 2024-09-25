@@ -7,10 +7,28 @@ export async function traducir(obj) {
     return a.translation;
 }
 
-export function arraySeleccion(myArray,  limite){
-    let obras = [];
-    const { objectIDs , total } = myArray;
-    return obras = objectIDs.slice(0, limite);
+export async function validacionDeIds(array){
+    let resultado = [];
+    let contador = 1;
+
+    for (const element of array) {
+        const url = `${URL_API}/objects/${element}`;
+        const consulta = await fetch(url);
+        const respuesta = await consulta.json();
+
+        if( !respuesta.message ){
+            const { objectDate, department,  objectName, portfolio, primaryImage, primaryImageSmall, title } = respuesta;
+            let obra = {objectDate, department,  objectName, portfolio, primaryImage, primaryImageSmall, title}
+            
+            resultado.push(obra);
+            /* console.log(`Objeto ${contador} agregado correctamente`)
+            contador++; */
+        } else{
+            console.log(`Error id no valido`);  
+        } 
+    }
+
+    return resultado;
 }
 
 export async function reconstruyendoObras(idsObras){
@@ -20,7 +38,14 @@ export async function reconstruyendoObras(idsObras){
         const url = `${URL_API}/objects/${idsObras[i]}`;
         const consulta = await fetch(url);
         const respuesta = await consulta.json();
-        arrayObjeros.push(respuesta);
+
+        if ( !respuesta.message ){
+            arrayObjeros.push(respuesta);
+        }else{
+
+            console.log(respuesta.message)
+        }
+        
     }
 
     return arrayObjeros;
@@ -45,14 +70,27 @@ export async function traduccionObjetos(params) {
     return obrasResultado;
 }
 
-export function paginasObras(obrasId, pagina, limite) {
-    const inicio = ( pagina -1 ) * limite;
-    const fin = inicio + limite;
+export function paginasObras(obrasId, pagina) {
+    const limite = 20;
+    const startIndex = (pagina - 1) * limite;
+    const endIndex = pagina * limite;
+    const resultado = {};
 
-    //*Arreglo con las obras
-    const obrasIdPaginas = obrasId.slice(inicio, fin)
-
-    //- Fetch
-
+    if ( endIndex < obrasId.length){
+        resultado.next = {
+            pagina: pagina + 1,
+            limite: limite
+        }
+    }
+    
+    if ( startIndex > 0 ){
+        resultado.previous = {
+            pagina: pagina - 1,
+            limite: limite
+        }
+    }
+    
+    resultado.resultado = obrasId.slice(startIndex, endIndex);
+    return resultado;
 }
 

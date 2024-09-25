@@ -8,7 +8,7 @@ block contenido
                 each error in errores
                     p.bg-red-600.text-white.uppercase.text-xl.text-center.p-2.mb-1.font-bold= error.msg
 
-        form.space-y-5(action="/?pagina=1&limite=20" method="POST")
+        form.space-y-5(action="/?pagina=1" method="POST")
             .contenedor.contenido-header
                 nav.navegacion-principal
                     div
@@ -27,22 +27,29 @@ block contenido
                         input(class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 cursor-pointer" type="submit" value="Buscar")
 
 block grid
-    if busquedaBoolean
-        div.contenedor
-            div.grid
-                each obra in objetosEs
-                    div(class="card")
-                        img(class="imagen-obra" src=`${obra.primaryImageSmall}`)
-                        div(class="info-card")
-                            h4(class="info-card_title")= obra.titulo
+    
                         
 
 block paginacion
     section  
-        form(action="/paginacion" method="POST")
-            .contenedor
-                p= totalResultados
-                div(class="paginador w-60")
-                    input(class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 cursor-pointer" type="submit" value="Anterior" name="anterior")
-                    input(class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 cursor-pointer" type="submit" value="Siguiente" name="siguiente")
+        .contenedor
+            if busquedaBoolean
+                h1 Resultados de búsqueda
+                    if objetosEs.length > 0
+                        ul
+                            if busquedaBoolean
+                                div.contenedor
+                                    div.grid
+                                        each obra in objetosEs
+                                            div(class="card")
+                                                img(class="imagen-obra" src=`${obra.primaryImageSmall}`)
+                                                div(class="info-card")
+                                                    h4(class="info-card_title")= obra.titulo
+                                
+                        div
+                            a(href=`/pagina/${pagina - 1}`) Anterior
+                            span Pagina #{pagina} de #{Math.ceil(totalResultados / 20)}
+                            a(href=`/?pagina=${paginaSiguiente}`) Siguiente
+                    else
+                        p No se encontraron resultados
                         

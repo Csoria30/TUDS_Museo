@@ -8,6 +8,8 @@ import { paginacionResultados } from './controllers/middleware.js';
 //* Realizamos una instancia de express
 const app = express();
 
+
+
 //* Habilitando la lectura de datos del formulario
 app.use(express.urlencoded({extended: true}))
 
@@ -23,7 +25,7 @@ app.set('views', './views');
 app.use(express.static('public'));
 
 //* Rutas 
-app.use('/', museoRoutes ); 
+app.use('/',  museoRoutes ); 
 
 
 
