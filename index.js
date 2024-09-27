@@ -1,14 +1,12 @@
 //! Importaciones
 import express from 'express';
+
 import dotenv from 'dotenv';
-import museoRoutes from './routes/routes.js';
-import { paginacionResultados } from './controllers/middleware.js';
+import museoRoutes from './routes/museoRoutes.js';
 
 //! variables
 //* Realizamos una instancia de express
 const app = express();
-
-
 
 //* Habilitando la lectura de datos del formulario
 app.use(express.urlencoded({extended: true}))
@@ -20,9 +18,12 @@ dotenv.config();
 app.set('view engine', 'pug');
 app.set('views', './views');
 
-
 //* Definir la carpeta publica   
 app.use(express.static('public'));
+
+//* Habilitar Pug
+app.set('view engine', 'pug');
+app.set('views', './views');
 
 //* Rutas 
 app.use('/',  museoRoutes ); 

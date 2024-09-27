@@ -1,5 +1,5 @@
 import translate from 'node-google-translate-skidz';
-import { URL_API } from './variables.js';
+import { URL_API, URL_API_SEARCH_IMAGE } from './variables.js';
 
 export async function traducir(obj) {
     let source = "en", target = "es";
@@ -19,10 +19,7 @@ export async function validacionDeIds(array){
         if( !respuesta.message ){
             const { objectDate, department,  objectName, portfolio, primaryImage, primaryImageSmall, title } = respuesta;
             let obra = {objectDate, department,  objectName, portfolio, primaryImage, primaryImageSmall, title}
-            
             resultado.push(obra);
-            /* console.log(`Objeto ${contador} agregado correctamente`)
-            contador++; */
         } else{
             console.log(`Error id no valido`);  
         } 
@@ -32,23 +29,21 @@ export async function validacionDeIds(array){
 }
 
 export async function reconstruyendoObras(idsObras){
-    const arrayObjeros = [];
+    const data = [];
+    let totalObras = 1;
 
-    for ( let i = 0; i < idsObras.length ; i++){
-        const url = `${URL_API}/objects/${idsObras[i]}`;
+    for (const element of idsObras) {
+        const url = `${URL_API}/objects/${element}`;
         const consulta = await fetch(url);
         const respuesta = await consulta.json();
-
         if ( !respuesta.message ){
-            arrayObjeros.push(respuesta);
-        }else{
-
-            console.log(respuesta.message)
+            data.push(respuesta);
+            totalObras = totalObras + 1;
         }
-        
     }
 
-    return arrayObjeros;
+
+    return {data, totalObras};
 }
 
 export async function traduccionObjetos(params) {
@@ -70,27 +65,21 @@ export async function traduccionObjetos(params) {
     return obrasResultado;
 }
 
-export function paginasObras(obrasId, pagina) {
-    const limite = 20;
-    const startIndex = (pagina - 1) * limite;
-    const endIndex = pagina * limite;
-    const resultado = {};
+export async function departamentos () {
+    const respuesta = await fetch(`${URL_API}/departments`);
+    const resultado = await respuesta.json();
 
-    if ( endIndex < obrasId.length){
-        resultado.next = {
-            pagina: pagina + 1,
-            limite: limite
-        }
-    }
+    const { departments } = resultado;
+
+    const traduccionesPromesas = departments.map ( async (departamento) => {
+        const traducciones = {};
+        let id = 0;
+        const { departmentId, displayName } = departamento;
+
+        traducciones.nombre = await traducir(displayName);
     
-    if ( startIndex > 0 ){
-        resultado.previous = {
-            pagina: pagina - 1,
-            limite: limite
-        }
-    }
+        return { departmentId , ...traducciones}
+    });
     
-    resultado.resultado = obrasId.slice(startIndex, endIndex);
-    return resultado;
+    return Promise.all(traduccionesPromesas) ; 
 }
-

@@ -1,0 +1,15 @@
+[
+    {
+        "departmentId": 1,
+        "displayName" : "Arms Department"
+    },
+    {
+        "departmentId": 2,
+        "displayName" : "Animal Department"
+    },
+    {
+        "departmentId": 3,
+        "displayName" : "Flowers Department"
+    }
+    
+]
