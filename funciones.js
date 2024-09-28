@@ -50,15 +50,25 @@ export async function traduccionObjetos(params) {
     //* Traduciendo las obras
     const traduccionesPromesas = params.map( async obra => {
         const traducciones = {};
-        const { objectDate, department,  objectName, portfolio, primaryImage, primaryImageSmall, title } = obra;
+        const {objectBeginDate, department,  objectName, portfolio, primaryImage, primaryImageSmall, title, culture, dynasty, additionalImages } = obra;
+        let urlLocal = "/img/noImagen.png"
+        let noDisponible = 'No disponible';
+
+        traducciones.departamento = department != '' ? (await traducir(department)) : (department);
+        traducciones.nombreObjeto = objectName != '' ? (await traducir(objectName)) : noDisponible;
+        traducciones.cultura = culture != '' ? (await traducir(culture)) : noDisponible;
+        traducciones.dinastia = dynasty != '' ? (await traducir(dynasty)) : noDisponible;
+        traducciones.informacion = portfolio != '' ? (await traducir(portfolio)) : noDisponible;
+        traducciones.titulo = title != '' ? (await traducir(title)) : noDisponible;
+
+        //* Imagenes
+        let imagen = primaryImage && primaryImage !== '' ? primaryImage : urlLocal;
+        let imagenSmall = primaryImageSmall && primaryImageSmall !== '' ? primaryImageSmall : urlLocal;
         
-        if( department ) traducciones.departamento = department != '' ? (await traducir(department)) : (department);
-        if( objectName ) traducciones.nombreObjeto = objectName != '' ? (await traducir(objectName)) : (objectName);
-        if( portfolio ) traducciones.informacion = portfolio != '' ? (await traducir(portfolio)) : (portfolio);
-        if( title ) traducciones.titulo = title != '' ? (await traducir(title)) : (title);
-        
-        /* console.log(obra) */
-        return {...traducciones, primaryImage, primaryImageSmall, objectDate};
+        //* Fechas
+        let fecha =objectBeginDate !== '' ?objectBeginDate : noDisponible;
+
+        return {...traducciones, imagen, imagenSmall,  additionalImages, fecha};
     })
 
     const obrasResultado = await Promise.all(traduccionesPromesas);  
@@ -83,3 +93,17 @@ export async function departamentos () {
     
     return Promise.all(traduccionesPromesas) ; 
 }
+
+export async function consultadoAPI(url){
+    let resultado = [];
+
+    //* consultando datos a la API
+    const consultaId = await fetch(url);
+    const respuestaId = await consultaId.json();
+
+    //* Destructurando los resultados
+    const { objectIDs, total } = respuestaId;
+
+    return { objectIDs, total}
+}
+

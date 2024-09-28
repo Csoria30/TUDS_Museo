@@ -8,7 +8,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "sass": "gulp dev",
-    "css": "postcss public/css/tailwind.css -o public/css/app2.css --watch"
+    "css": "postcss public/css/tailwind.css -o public/css/style_tailwind.css --watch"
   },
   "author": "Soria Cristian",
   "license": "ISC",
