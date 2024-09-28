@@ -39,18 +39,18 @@ block contenido
                                     span(class="font-light") #{obra.dinastia}
 
                                 if obra.additionalImages.length > 0
-                                    button(class="open-modal-btn" class="px-4 py-2 bg-blue-500 text-white rounded w-full") Ver Imagenes Extras
+                                    button(onclick="openModal()" class="px-4 py-2 bg-blue-500 text-white rounded w-full") Ver Imagenes Extras
         
             div(id="modal-wrapper" class="fixed left-0 top-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none" data-twe-modal-init tabindex="-1")
                 div(class="flex items-center justify-center min-h-screen bg-gray-500 bg-opacity-75 transition-all")
                     //Modal Box
                     div(class="flex flex-col items-center justify-between bg-white p-10 rounded w-2/3")
-                        h3 Hola Juan Carlos 
+                        h3 Imagenes Extras
                         if obrasEs.length > 0
                             each obra in obrasEs
                                 img(class="w-full" src=`${obra.additionalImages}`)
 
-                        button(class="bg-red-500 text-white py-3 px-10 rounded" class="close-modal-btn") Cerrar
+                        button(class="bg-red-500 text-white py-3 px-10 rounded" class="close-modal-btn", onclick="closeModal()") Cerrar
 
                                                                             
 

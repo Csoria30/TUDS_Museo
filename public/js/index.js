@@ -1,7 +1,10 @@
-document.querySelector(".open-modal-btn").addEventListener("click", () => {
-    document.getElementById("modal-wrapper").classList.remove("hidden")
-})
+console.log('Desde Fronend')
 
-document.querySelector(".close-modal-btn").addEventListener("click", () => {
-    document.getElementById("modal-wrapper").classList.add("hidden")
-})
+function openModal() {
+    console.log('Desde open modal')
+    document.getElementById('modal-wrapper').classList.remove('hidden');
+}
+      
+function closeModal() {
+  document.getElementById('modal-wrapper').classList.add('hidden');
+}
